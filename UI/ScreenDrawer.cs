@@ -36,8 +36,12 @@ namespace UI
 
         public void Draw()
         {
+            int cursorLeft = Console.CursorLeft;
+            int cursorTop = Console.CursorTop;
+
             Console.CursorVisible = false;
-            for (var i = 0; i < Console.WindowHeight - 1; i++)
+
+            for (var i = 0; i < Console.WindowHeight - 2; i++)
             {
                 CleanLine(i);
             }
@@ -71,7 +75,7 @@ namespace UI
             Console.WriteLine(CommandMessage);
             Console.WriteLine("=====================================================================");
 
-            Console.SetCursorPosition(0, Console.WindowHeight - 2);
+            Console.SetCursorPosition(cursorLeft, cursorTop);
             Console.CursorVisible = true;
         }
 
@@ -86,7 +90,7 @@ namespace UI
             _showHelp = !_showHelp;
         }
 
-        private void CleanLine(int line)
+        public void CleanLine(int line)
         {
             Console.SetCursorPosition(0, line);
             Console.Write(new string(' ', Console.WindowWidth));
