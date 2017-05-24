@@ -6,20 +6,21 @@ namespace UI
 {
     public class ScreenDrawer
     {
-        private IAnimalRepository _animals;
         private const string _help = "Commands:\n"
-            + "add <new animal name, must be unique> <new animal species>\n"
-            + "remove <animal name to remove, possible to remove only dead animals>\n"
-            + "heal <animal name>\n"
-            + "feed <animal name>\n"
-            + "Specieses:\n"
-            + "-Wolf\n"
-            + "-Bear\n"
-            + "-Tiger\n"
-            + "-Lion\n"
-            + "-Fox\n"
-            + "-Elephant\n"
-            + "For hide help type help again";
+           + "add <new animal name, must be unique> <new animal species>\n"
+           + "remove <animal name to remove, possible to remove only dead animals>\n"
+           + "heal <animal name>\n"
+           + "feed <animal name>\n"
+           + "Specieses:\n"
+           + "-Wolf\n"
+           + "-Bear\n"
+           + "-Tiger\n"
+           + "-Lion\n"
+           + "-Fox\n"
+           + "-Elephant\n"
+           + "For hide help type help again";
+
+        private IAnimalRepository _animals;
         private bool _showHelp;
 
         public ScreenDrawer(IAnimalRepository animals)
@@ -55,10 +56,10 @@ namespace UI
             Console.WriteLine("=====================================================================");
         }
 
-        public void Draw(string eventMessage)
+        public void DrawEvent(IAnimalRepository sender, RepositoryChangedEventArgs e)
         {
             Draw();
-            Console.WriteLine($"*{eventMessage}*");
+            Console.WriteLine($"*{e.Message}*");
         }
 
         public void ShowHelp()

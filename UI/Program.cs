@@ -12,8 +12,9 @@ namespace UI
         {
             Zoo zoo = new Zoo();
             ScreenDrawer drawer = new ScreenDrawer(zoo.Animals);
-            zoo.Animals.OnRepositoryChanged += drawer.Draw;
             string lastCommandResult = String.Empty;
+
+            zoo.Animals.RepositoryChanged += drawer.DrawEvent;
 
             while (true)
             {
@@ -63,7 +64,7 @@ namespace UI
                 }
                 catch (Exception ex)
                 {
-                    lastCommandResult = "Unknown command or invalid parameters";
+                    lastCommandResult = $"Error: {ex.Message}";
                 }
             }
         }

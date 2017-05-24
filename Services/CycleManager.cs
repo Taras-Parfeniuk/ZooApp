@@ -10,8 +10,9 @@ namespace Services
 {
     public class CycleManager
     {
-        private Timer _timer;
         private const int _interval = 5000;
+
+        private Timer _timer;
         private IAnimalRepository _animals;
 
 
