@@ -54,6 +54,10 @@ namespace UI
                             break;
                     }
                 }
+                catch (AnimalNotFoundException ex)
+                {
+                    lastCommandResult = $"Animal named {ex.Message} is not exist";
+                }
                 catch (NameAlreadyUsedException ex)
                 {
                     lastCommandResult = $"Name {ex.Message} already in use";

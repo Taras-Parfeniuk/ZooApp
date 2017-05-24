@@ -4,8 +4,6 @@ namespace Domain.Exceptions
 {
     public class SpeciesNotFoundException : Exception
     {
-        public SpeciesNotFoundException(string message) : base(message)
-        {
-        }
+        public SpeciesNotFoundException(string message) : base(message) { }
     }
 }

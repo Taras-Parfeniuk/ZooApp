@@ -41,24 +41,23 @@ namespace UI
             Entries.Add(entry);
         }
 
-        private IEnumerable<string> GetColumnByName(string value)
+        public void WriteHead()
         {
-            var header = Entries[0];
-            var n = -1;
-            for (var i = 0; i < _columnCount; i++)
-            {
-                if (header[i] == value)
-                    n = i;
-            }
-            return GetColumn(n);
+            SetEntryStringFormat();
+            if (Entries != null)
+                Console.WriteLine(_entryStringFormat, Entries[0]);
         }
 
-        private IEnumerable<string> GetColumn(int columnId)
+        public void WriteEntries()
         {
-            if (columnId < 0 || columnId >= _columnCount)
-                throw new ArgumentOutOfRangeException();
-
-            return Entries.Select(entry => entry[columnId]).ToList();
+            SetEntryStringFormat();
+            foreach (var entry in Entries)
+            {
+                if (entry != Entries[0] && entry != null)
+                {
+                    Console.WriteLine(_entryStringFormat, entry);
+                }
+            }
         }
 
         private static int GetColumnWidth(IEnumerable<string> column)
@@ -86,23 +85,24 @@ namespace UI
             }
         }
 
-        public void WriteHead()
+        private IEnumerable<string> GetColumnByName(string value)
         {
-            SetEntryStringFormat();
-            if (Entries != null)
-                Console.WriteLine(_entryStringFormat, Entries[0]);
+            var header = Entries[0];
+            var n = -1;
+            for (var i = 0; i < _columnCount; i++)
+            {
+                if (header[i] == value)
+                    n = i;
+            }
+            return GetColumn(n);
         }
 
-        public void WriteEntries()
+        private IEnumerable<string> GetColumn(int columnId)
         {
-            SetEntryStringFormat();
-            foreach (var entry in Entries)
-            {
-                if (entry != Entries[0] && entry != null)
-                {
-                    Console.WriteLine(_entryStringFormat, entry);
-                }
-            }
+            if (columnId < 0 || columnId >= _columnCount)
+                throw new ArgumentOutOfRangeException();
+
+            return Entries.Select(entry => entry[columnId]).ToList();
         }
     }
 }
