@@ -23,14 +23,27 @@ namespace UI
         private IAnimalRepository _animals;
         private bool _showHelp;
 
+        public string CommandMessage { get; set; }
+        public string EventMessage { get; set; }
+
         public ScreenDrawer(IAnimalRepository animals)
         {
             _animals = animals;
             _showHelp = false;
+            CommandMessage = String.Empty;
+            EventMessage = String.Empty;
         }
 
         public void Draw()
         {
+            Console.CursorVisible = false;
+            for (var i = 0; i < Console.WindowHeight - 1; i++)
+            {
+                CleanLine(i);
+            }
+
+            Console.SetCursorPosition(0, 0);
+
             Table table = new Table("Name", "State", "Health");
 
             foreach (var animal in _animals.GetAll())
@@ -38,7 +51,6 @@ namespace UI
                 table.AddEntry(animal.ToString(), animal.State, $"{animal.Health}/{animal.MaxHealth}");
             }
 
-            Console.Clear();
             Console.WriteLine("Welcome  to the Zoo!!!");
             Console.WriteLine("To exit type quit");
             Console.WriteLine("To look available commands please type help");
@@ -54,17 +66,30 @@ namespace UI
             table.WriteEntries();
 
             Console.WriteLine("=====================================================================");
+            Console.WriteLine(EventMessage);
+            Console.WriteLine("---------------------------------------------------------------------");
+            Console.WriteLine(CommandMessage);
+            Console.WriteLine("=====================================================================");
+
+            Console.SetCursorPosition(0, Console.WindowHeight - 2);
+            Console.CursorVisible = true;
         }
 
-        public void DrawEvent(IAnimalRepository sender, RepositoryChangedEventArgs e)
+        public void DrawEventMessage(IAnimalRepository sender, RepositoryChangedEventArgs e)
         {
+            EventMessage = e.Message;
             Draw();
-            Console.WriteLine($"*{e.Message}*");
         }
 
         public void ShowHelp()
         {
             _showHelp = !_showHelp;
+        }
+
+        private void CleanLine(int line)
+        {
+            Console.SetCursorPosition(0, line);
+            Console.Write(new string(' ', Console.WindowWidth));
         }
     }
 }
