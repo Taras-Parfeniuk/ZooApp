@@ -1,4 +1,6 @@
-﻿using Repository;
+﻿using System;
+
+using Repository;
 using Services.Infrastructure;
 using Domain.Exceptions;
 
@@ -10,10 +12,13 @@ namespace Services
 
         public IAnimalRepository Animals { get; private set; }
 
+        public event ZooClosingEventHandler ZooClosing;
+
         public Zoo()
         {
             Animals = new AnimalRepository();
             _cycle = new CycleManager(Animals);
+            _cycle.AllAnimalsDead += OnAllAnimalsDead;
         }
 
         public void AddAnimal(string name, string species)
@@ -58,5 +63,14 @@ namespace Services
 
             return false;
         }
+
+        protected virtual void OnAllAnimalsDead(object sender, AllAnimalsDeadEventArgs e)
+        {
+            ZooClosing(this, new ZooClosingEventArgs());
+        }
     }
+
+    public delegate void ZooClosingEventHandler(object sender, ZooClosingEventArgs e);
+
+    public class ZooClosingEventArgs : EventArgs { }
 }

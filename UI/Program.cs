@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Repository;
 using Services;
 using Domain.Exceptions;
 
@@ -8,20 +7,27 @@ namespace UI
 {
     class Program
     {
+        static void OnZooClosing(object sender, ZooClosingEventArgs e)
+        {
+            Console.Clear();
+            Console.WriteLine("It\'s all, we are closing. Bye...");
+            System.Threading.Thread.Sleep(5000);
+            Environment.Exit(0);
+        }
+
         static void Main(string[] args)
         {
             Zoo zoo = new Zoo();
             ScreenDrawer drawer = new ScreenDrawer(zoo.Animals);
             string lastCommandResult = String.Empty;
 
-            zoo.Animals.RepositoryChanged += drawer.DrawEvent;
+            zoo.Animals.RepositoryChanged += drawer.DrawEventMessage;
+            zoo.ZooClosing += OnZooClosing; 
 
             while (true)
             {
+                drawer.CommandMessage = lastCommandResult;
                 drawer.Draw();
-
-                Console.WriteLine(lastCommandResult);
-                Console.WriteLine("---------------------------------------------------------------------");
 
                 string commandString = Console.ReadLine();
                 string[] command = commandString.Split(' ');
