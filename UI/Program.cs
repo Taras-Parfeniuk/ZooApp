@@ -26,6 +26,9 @@ namespace UI
 
             while (true)
             {
+                drawer.CleanLine(Console.WindowHeight - 2);
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+
                 drawer.CommandMessage = lastCommandResult;
                 drawer.Draw();
 
