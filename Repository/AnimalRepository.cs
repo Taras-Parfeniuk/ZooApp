@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Domain.Abstract;
-using Domain.Exceptions;
 
 namespace Repository
 {
     public class AnimalRepository : IAnimalRepository
     {
-        public event RepositoryChangedHandler OnRepositoryChanged;
+        public event RepositoryChangedHandler RepositoryChanged;
 
         private List<Animal> _animals = new List<Animal>();
 
@@ -34,9 +32,9 @@ namespace Repository
             _animals.Remove(animal);
         }
 
-        public void OnItemChanged(string message)
+        protected virtual void OnItemChanged(Animal sender, AnimalChangedEventArgs e)
         {
-            OnRepositoryChanged(message);
+            RepositoryChanged(this, new RepositoryChangedEventArgs(e.Message));
         }
     }
 }

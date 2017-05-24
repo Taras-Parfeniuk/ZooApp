@@ -1,7 +1,4 @@
-﻿using System.Timers;
-
-using Domain.Abstract;
-using Repository;
+﻿using Repository;
 using Services.Infrastructure;
 using Domain.Exceptions;
 
@@ -9,8 +6,9 @@ namespace Services
 {
     public class Zoo
     {
-        public IAnimalRepository Animals { get; private set; }
         private CycleManager _cycle;
+
+        public IAnimalRepository Animals { get; private set; }
 
         public Zoo()
         {
@@ -29,22 +27,35 @@ namespace Services
 
         public void FeedAnimal(string name)
         {
-            Animals.Get(name).Feed();
+            FeedAnimalCommand command = new FeedAnimalCommand(Animals.Get(name));
+            CommandInvoker invoker = new CommandInvoker();
+
+            invoker.SetCommand(command);
+            invoker.Run();
         }
 
         public void HealAnimal(string name)
         {
-            Animals.Get(name).Heal();
+            HealAnimalCommand command = new HealAnimalCommand(Animals.Get(name));
+            CommandInvoker invoker = new CommandInvoker();
+
+            invoker.SetCommand(command);
+            invoker.Run();
         }
 
         public bool RemoveAnimal(string name)
         {
             var animal = Animals.Get(name);
-            if (!(animal?.IsAlive != false && animal?.IsAlive != null))
+
+            if (animal == null)
+                throw new AnimalNotFoundException(name);
+
+            if (!animal.IsAlive)
             {
                 Animals.Remove(animal);
                 return true;
             }
+
             return false;
         }
     }

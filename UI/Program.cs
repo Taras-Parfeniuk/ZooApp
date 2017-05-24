@@ -12,8 +12,9 @@ namespace UI
         {
             Zoo zoo = new Zoo();
             ScreenDrawer drawer = new ScreenDrawer(zoo.Animals);
-            zoo.Animals.OnRepositoryChanged += drawer.Draw;
             string lastCommandResult = String.Empty;
+
+            zoo.Animals.RepositoryChanged += drawer.DrawEvent;
 
             while (true)
             {
@@ -53,6 +54,10 @@ namespace UI
                             break;
                     }
                 }
+                catch (AnimalNotFoundException ex)
+                {
+                    lastCommandResult = $"Animal named {ex.Message} is not exist";
+                }
                 catch (NameAlreadyUsedException ex)
                 {
                     lastCommandResult = $"Name {ex.Message} already in use";
@@ -63,7 +68,7 @@ namespace UI
                 }
                 catch (Exception ex)
                 {
-                    lastCommandResult = "Unknown command or invalid parameters";
+                    lastCommandResult = $"Error: {ex.Message}";
                 }
             }
         }
