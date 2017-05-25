@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Domain.Abstract;
@@ -7,9 +8,80 @@ namespace Repository
 {
     public class AnimalRepository : IAnimalRepository
     {
-        public event RepositoryChangedHandler RepositoryChanged;
-
         private List<Animal> _animals = new List<Animal>();
+
+        #region Lection 3
+
+        public IEnumerable<Animal> GetByType(string typeName)
+        {
+            return _animals.Where(a => a.GetType().Name.ToLower() == typeName.ToLower());
+        }
+
+        public IEnumerable<Animal> GetByState(AnimalState state)
+        {
+            return _animals.Where(a => a.State == state);
+        }
+
+        public IEnumerable<Animal> GetSickTigers()
+        {
+            return _animals
+                .Where(a => a.GetType().Name == "Tiger")
+                .Where(t => t.State == AnimalState.Sick);
+        }
+
+        public Animal GetElephantByName(string name)
+        {
+            return _animals
+                .Where(a => a.GetType().Name == "Elephant")
+                .FirstOrDefault(e => e.Name == name);
+        }
+
+        public IEnumerable<string> GetHungryNames()
+        {
+            return _animals
+                .Where(a => a.State == AnimalState.Hungry)
+                .Select(h => h.Name);
+        }
+
+        public IEnumerable<Animal> GetMostHelthy()
+        {
+            return _animals
+                .GroupBy(o => o.GetType())
+                .Select(g => 
+                    g.First(a =>
+                        a.Health == g.Max(i => i.Health)));
+        }
+
+        public IEnumerable<Tuple<string, int>> GetDeadCountPerType()
+        {
+            return _animals
+                .GroupBy(o => o.GetType())
+                .Select(g => 
+                    Tuple.Create<string, int>(g.Key.Name, g.Where(a => a.State == AnimalState.Dead).Count()));
+        }
+
+        public IEnumerable<Animal> GetWolfsAndBearsByHealth(int health)
+        {
+            return _animals
+                .Where(a => (a.GetType().Name == "Wolf" || a.GetType().Name == "Bear") && a.Health > health);
+        }
+
+        public Tuple<Animal, Animal> GetMinAndMaxHealthy()
+        {
+            return Tuple.Create<Animal, Animal>(
+                _animals
+                    .FirstOrDefault(a => a.Health == _animals.Min(o => o.Health)),
+                _animals
+                    .FirstOrDefault(a => a.Health == _animals.Max(o => o.Health)));
+        }
+
+        public double GetHealthAverage()
+        {
+            return _animals.Average(a => a.Health);
+        }
+        #endregion
+
+        public event RepositoryChangedHandler RepositoryChanged;
 
         public void Add(Animal animal)
         {

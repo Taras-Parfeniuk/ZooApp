@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 using Domain.Abstract;
 
@@ -12,6 +13,17 @@ namespace Repository
         void Remove(Animal animal);
         Animal Get(string name);
         IEnumerable<Animal> GetAll();
+
+        IEnumerable<Animal> GetByType(string typeName);
+        IEnumerable<Animal> GetByState(AnimalState state);
+        IEnumerable<Animal> GetSickTigers();
+        Animal GetElephantByName(string name);
+        IEnumerable<string> GetHungryNames();
+        IEnumerable<Animal> GetMostHelthy();
+        IEnumerable<Tuple<string, int>> GetDeadCountPerType();
+        IEnumerable<Animal> GetWolfsAndBearsByHealth(int health);
+        Tuple<Animal, Animal> GetMinAndMaxHealthy();
+        double GetHealthAverage();
     }
 
     public delegate void RepositoryChangedHandler(IAnimalRepository sender, RepositoryChangedEventArgs e);
