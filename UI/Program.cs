@@ -58,6 +58,8 @@ namespace UI
                         case "quit":
                             Environment.Exit(0);
                             break;
+                        case null:
+                            break;
                         default:
                             lastCommandResult = "Unknown command";
                             break;
