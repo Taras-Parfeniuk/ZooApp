@@ -66,13 +66,9 @@ namespace Repository
                 .Where(a => (a.GetType().Name == "Wolf" || a.GetType().Name == "Bear") && a.Health > health);
         }
 
-        public Tuple<Animal, Animal> GetMinAndMaxHealthy()
+        public IEnumerable<Animal> GetMinAndMaxHealthy()
         {
-            return Tuple.Create<Animal, Animal>(
-                _animals
-                    .FirstOrDefault(a => a.Health == _animals.Min(o => o.Health)),
-                _animals
-                    .FirstOrDefault(a => a.Health == _animals.Max(o => o.Health)));
+            return _animals.Where(a => a.Health == _animals.Max(x => x.Health) || a.Health == _animals.Min(x => x.Health));
         }
 
         public double GetHealthAverage()

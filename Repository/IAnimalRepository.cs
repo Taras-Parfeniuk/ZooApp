@@ -22,7 +22,7 @@ namespace Repository
         IEnumerable<Animal> GetMostHelthy();
         IEnumerable<Tuple<string, int>> GetDeadCountPerType();
         IEnumerable<Animal> GetWolfsAndBearsByHealth(int health);
-        Tuple<Animal, Animal> GetMinAndMaxHealthy();
+        IEnumerable<Animal> GetMinAndMaxHealthy();
         double GetHealthAverage();
     }
 

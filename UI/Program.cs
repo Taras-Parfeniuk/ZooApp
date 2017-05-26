@@ -100,8 +100,7 @@ namespace UI
                             drawer.SetDataSource(zoo.Animals.GetWolfsAndBearsByHealth(3));
                             break;
                         case "GetMinAndMaxHealthy":
-                            var tuple = zoo.Animals.GetMinAndMaxHealthy();
-                            drawer.SetDataSource(new List<Animal>() { tuple.Item1, tuple.Item2 });
+                            drawer.SetDataSource(zoo.Animals.GetMinAndMaxHealthy());
                             break;
                         case "GetHealthAverage":
                             lastCommandResult = zoo.Animals.GetHealthAverage().ToString();
