@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace UI
 {
-    public class Table
+    public class FormatedTable
     {
         public int EntriesCount => Entries.Count;
 
@@ -12,7 +12,9 @@ namespace UI
         private readonly int _columnCount;
         private string _entryStringFormat;
 
-        public Table(params string[] columnNames)
+        public FormatedTable() { }
+
+        public FormatedTable(params string[] columnNames)
         {
             Entries = new List<string[]> { columnNames };
             _columnCount = columnNames.Length;
@@ -58,6 +60,11 @@ namespace UI
                     Console.WriteLine(_entryStringFormat, entry);
                 }
             }
+        }
+
+        public void ClearEntries()
+        {
+            Entries.RemoveRange(1, Entries.Count - 1);
         }
 
         private static int GetColumnWidth(IEnumerable<string> column)
