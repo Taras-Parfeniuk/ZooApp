@@ -15,7 +15,7 @@ namespace Repository
         IEnumerable<Animal> GetAll();
 
         IEnumerable<Animal> GetByType(string typeName);
-        IEnumerable<Animal> GetByState(AnimalState state);
+        IEnumerable<Animal> GetByState(string stateName);
         IEnumerable<Animal> GetSickTigers();
         Animal GetElephantByName(string name);
         IEnumerable<string> GetHungryNames();

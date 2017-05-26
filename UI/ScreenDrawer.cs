@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using Repository;
 using Domain.Abstract;
@@ -70,8 +71,14 @@ namespace UI
             while (true);
         }
 
+        public void SetDataSource(IEnumerable<Animal> animals)
+        {
+            _table = new BindedTable<Animal>(animals, a => Tuple.Create<string, char, string>("Name|State|Health", '|', $"{a.ToString()}|{a.State}|{a.Health}/{a.MaxHealth}"));
+        }
+
         public ScreenDrawer(IAnimalRepository animals)
         {
+            Console.SetWindowSize(140, 47);
             _animals = animals;
             _showHelp = false;
             _table = new BindedTable<Animal>(_animals.GetAll(), a => Tuple.Create<string, char, string>("Name|State|Health", '|', $"{a.ToString()}|{a.State}|{a.Health}/{a.MaxHealth}"));
@@ -135,17 +142,32 @@ namespace UI
         }
 
         private const string _help = "Commands:\n"
-           + "add <new animal name, must be unique> <new animal species>\n"
-           + "remove <animal name to remove, possible to remove only dead animals>\n"
-           + "heal <animal name>\n"
-           + "feed <animal name>\n"
+           + " -add <new animal name, must be unique> <new animal species>\n"
+           + " -remove <animal name to remove, possible to remove only dead animals>\n"
+           + " -heal <animal name>\n"
+           + " -feed <animal name>\n"
            + "Specieses:\n"
-           + "-Wolf\n"
-           + "-Bear\n"
-           + "-Tiger\n"
-           + "-Lion\n"
-           + "-Fox\n"
-           + "-Elephant\n"
+           + " -Wolf\n"
+           + " -Bear\n"
+           + " -Tiger\n"
+           + " -Lion\n"
+           + " -Fox\n"
+           + " -Elephant\n"
+           + "Page navigation:\n"
+           + " -Ctrl + -> - next page\n"
+           + " -Ctrl + <- - previous page\n"
+           + "Lection 3 Homework methods:\n"
+           + " -GetByType <type name>\n"
+           + " -GetByState <state name>\n"
+           + " -GetSickTigers\n"
+           + " -GetElephantByName <name>\n"
+           + " -GetHungryNames\n"
+           + " -GetMostHelthy\n"
+           + " -GetDeadCountPerType\n"
+           + " -GetWolfsAndBearsByHealth - get Wolfs And Bears with health more than 3\n"
+           + " -GetMinAndMaxHealthy\n"
+           + " -GetHealthAverage\n"
+           + " -all - get all animals\n"
            + "For hide help type help again";
 
         private IAnimalRepository _animals;

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 
 using Services;
 using Domain.Exceptions;
+using Domain.Abstract;
+using System.Collections.Generic;
 
 namespace UI
 {
@@ -57,6 +60,51 @@ namespace UI
                             break;
                         case "quit":
                             Environment.Exit(0);
+                            break;
+                        case "all":
+                            drawer.SetDataSource(zoo.Animals.GetAll());
+                            break;
+                        case "GetByType":
+                            drawer.SetDataSource(zoo.Animals.GetByType(command[1]));
+                            break;
+                        case "GetByState":
+                            drawer.SetDataSource(zoo.Animals.GetByState(command[1]));
+                            break;
+                        case "GetSickTigers":
+                            drawer.SetDataSource(zoo.Animals.GetSickTigers());
+                            break;
+                        case "GetElephantByName":
+                            drawer.SetDataSource(new List<Animal>() { zoo.Animals.GetElephantByName(command[1]) });
+                            break;
+                        case "GetHungryNames": 
+                            lastCommandResult = String.Empty;
+
+                            foreach (var a in zoo.Animals.GetHungryNames())
+                            {
+                                lastCommandResult += $"{a}, ";
+                            }
+                            lastCommandResult.Remove(lastCommandResult.Count() - 1, 1);
+                            break;
+                        case "GetMostHelthy":
+                            drawer.SetDataSource(zoo.Animals.GetMostHelthy());
+                            break;
+                        case "GetDeadCountPerType":
+                            lastCommandResult = String.Empty;
+
+                            foreach(var t in zoo.Animals.GetDeadCountPerType())
+                            {
+                                lastCommandResult += $"{t.Item1}: {t.Item2}\n";
+                            }
+                            break;
+                        case "GetWolfsAndBearsByHealth":
+                            drawer.SetDataSource(zoo.Animals.GetWolfsAndBearsByHealth(3));
+                            break;
+                        case "GetMinAndMaxHealthy":
+                            var tuple = zoo.Animals.GetMinAndMaxHealthy();
+                            drawer.SetDataSource(new List<Animal>() { tuple.Item1, tuple.Item2 });
+                            break;
+                        case "GetHealthAverage":
+                            lastCommandResult = zoo.Animals.GetHealthAverage().ToString();
                             break;
                         default:
                             lastCommandResult = "Unknown command";

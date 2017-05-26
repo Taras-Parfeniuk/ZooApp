@@ -17,9 +17,9 @@ namespace Repository
             return _animals.Where(a => a.GetType().Name.ToLower() == typeName.ToLower());
         }
 
-        public IEnumerable<Animal> GetByState(AnimalState state)
+        public IEnumerable<Animal> GetByState(string stateName)
         {
-            return _animals.Where(a => a.State == state);
+            return _animals.Where(a => a.State.ToString() == stateName);
         }
 
         public IEnumerable<Animal> GetSickTigers()
