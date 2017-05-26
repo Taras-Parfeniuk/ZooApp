@@ -32,7 +32,7 @@ namespace UI
                 drawer.CommandMessage = lastCommandResult;
                 drawer.Draw();
 
-                string commandString = Console.ReadLine();
+                string commandString = drawer.ReadLineWithControl();
                 string[] command = commandString.Split(' ');
 
                 try
@@ -57,8 +57,6 @@ namespace UI
                             break;
                         case "quit":
                             Environment.Exit(0);
-                            break;
-                        case null:
                             break;
                         default:
                             lastCommandResult = "Unknown command";

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 
 using Repository;
+using Domain.Abstract;
 
 namespace UI
 {
@@ -9,46 +11,60 @@ namespace UI
         public string CommandMessage { get; set; }
         public string EventMessage { get; set; }
 
-        public string ReadLineOrEsc(string prefix = "")
+        public string ReadLineWithControl(string prefix = "")
         {
-            string retString = prefix;
-            int curIndex = 0;
+            string readString = prefix;
+            int currentIndex = 0;
 
             do
             {
                 ConsoleKeyInfo readKeyResult = Console.ReadKey(true);
-
-                if ((readKeyResult.Key == ConsoleKey.RightArrow || readKeyResult.Key == ConsoleKey.LeftArrow) 
-                    && (readKeyResult.Modifiers & ConsoleModifiers.Control) != 0)
+                if ((readKeyResult.Modifiers & ConsoleModifiers.Control) != 0)
                 {
-                    
-                }
-
-                // handle Enter
-                if (readKeyResult.Key == ConsoleKey.Enter)
-                {
-                    Console.WriteLine();
-                    return retString;
-                }
-
-                // handle backspace
-                if (readKeyResult.Key == ConsoleKey.Backspace)
-                {
-                    if (curIndex > 0)
+                    switch (readKeyResult.Key)
                     {
-                        retString = retString.Remove(retString.Length - 1);
-                        Console.Write(readKeyResult.KeyChar);
-                        Console.Write(' ');
-                        Console.Write(readKeyResult.KeyChar);
-                        curIndex--;
+                        case ConsoleKey.RightArrow:
+                            _table.NextPage();
+                            Draw();
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            _table.PreviousPage();
+                            Draw();
+                            break;
                     }
                 }
-                else
-                // handle all other keypresses
+                switch (readKeyResult.Key)
                 {
-                    retString += readKeyResult.KeyChar;
-                    Console.Write(readKeyResult.KeyChar);
-                    curIndex++;
+                    case ConsoleKey.Enter:
+                        Console.WriteLine();
+                        return readString;
+                    case ConsoleKey.Backspace:
+                        if (currentIndex > 0)
+                        {
+                            readString = readString.Remove(readString.Length - 1);
+                            Console.Write(readKeyResult.KeyChar);
+                            Console.Write(' ');
+                            Console.Write(readKeyResult.KeyChar);
+                            currentIndex--;
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        currentIndex--;
+                        Console.SetCursorPosition(currentIndex, Console.CursorTop);
+                        break;
+                    case ConsoleKey.RightArrow:
+                        currentIndex++;
+                        Console.SetCursorPosition(currentIndex, Console.CursorTop);
+                        break;
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.UpArrow:
+                        break;
+                    default:
+                        readString = readString.Insert(currentIndex, readKeyResult.KeyChar.ToString());
+                        readString.Skip(currentIndex).Take(readString.Count() - currentIndex).ToList().ForEach(c => Console.Write(c));
+                        currentIndex++;
+                        Console.SetCursorPosition(currentIndex, Console.CursorTop);
+                        break;
                 }
             }
             while (true);
@@ -58,7 +74,8 @@ namespace UI
         {
             _animals = animals;
             _showHelp = false;
-            _table = new FormatedTable("Name", "State", "Health");
+            _table = new BindedTable<Animal>(_animals.GetAll(), a => Tuple.Create<string, char, string>("Name|State|Health", '|', $"{a.ToString()}|{a.State}|{a.Health}/{a.MaxHealth}"));
+            _table.UsePageination();
             CommandMessage = String.Empty;
             EventMessage = String.Empty;
         }
@@ -77,13 +94,6 @@ namespace UI
 
             Console.SetCursorPosition(0, 0);
 
-            _table.ClearEntries();
-
-            foreach (var animal in _animals.GetAll())
-            {
-                _table.AddEntry(animal.ToString(), animal.State, $"{animal.Health}/{animal.MaxHealth}");
-            }
-
             Console.WriteLine("Welcome  to the Zoo!!!");
             Console.WriteLine("To exit type quit");
             Console.WriteLine("To look available commands please type help");
@@ -95,8 +105,7 @@ namespace UI
             Console.WriteLine("Animals in Zoo");
             Console.WriteLine("=====================================================================");
 
-            _table.WriteHead();
-            _table.WriteEntries();
+            _table.WriteTable();
 
             Console.WriteLine("=====================================================================");
             Console.WriteLine(EventMessage);
@@ -141,6 +150,6 @@ namespace UI
 
         private IAnimalRepository _animals;
         private bool _showHelp;
-        private FormatedTable _table;
+        private BindedTable<Animal> _table;
     }
 }

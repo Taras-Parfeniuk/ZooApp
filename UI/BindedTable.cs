@@ -36,6 +36,7 @@ namespace UI
         {
             _data = source;
             _formatter = formatter;
+            _currentPage = new TablePage<T>(1, _data);
         }
 
         public void UsePageination(int pageSize = 3)
@@ -43,6 +44,13 @@ namespace UI
             _pageSize = pageSize;
             _usePagination = true;
             _currentPage = new TablePage<T>(1, _data.Take(_pageSize));
+        }
+
+        public void UseNoPageination()
+        {
+            _pageSize = 0;
+            _usePagination = false;
+            _currentPage = new TablePage<T>(1, _data);
         }
 
         public void NextPage()
@@ -91,23 +99,45 @@ namespace UI
 
         public void WriteTable()
         {
-            FormatedTable formatedTable = new FormatedTable();
-            bool isHead = true;
-
-            foreach (var item in _data)
+            if (_currentPage.Items.Count() > 0)
             {
-                Tuple<string, char, string> entry = _formatter(item);
-                
-                if (isHead)
-                {
-                    formatedTable = new FormatedTable(entry.Item1.Split(entry.Item2));
-                    isHead = false;
-                }
+                FormatedTable formatedTable = new FormatedTable();
+                bool isHead = true;
 
-                formatedTable.AddEntry(entry.Item3.Split(entry.Item2));
+                if (_usePagination)
+                {
+                    foreach (var item in _currentPage.Items)
+                    {
+                        Tuple<string, char, string> entry = _formatter(item);
+
+                        if (isHead)
+                        {
+                            formatedTable = new FormatedTable(entry.Item1.Split(entry.Item2));
+                            isHead = false;
+                        }
+
+                        formatedTable.AddEntry(entry.Item3.Split(entry.Item2));
+                    }
+                }
+                else
+                {
+                    foreach (var item in _currentPage.Items)
+                    {
+                        Tuple<string, char, string> entry = _formatter(item);
+
+                        if (isHead)
+                        {
+                            formatedTable = new FormatedTable(entry.Item1.Split(entry.Item2));
+                            isHead = false;
+                        }
+
+                        formatedTable.AddEntry(entry.Item3.Split(entry.Item2));
+                    }
+                }
+                formatedTable.WriteHead();
+                formatedTable.WriteEntries();
+                Console.WriteLine($"Page: {_currentPage.Id}/{PagesCount}");
             }
-            formatedTable.WriteHead();
-            formatedTable.WriteEntries();
         }
     }
 
