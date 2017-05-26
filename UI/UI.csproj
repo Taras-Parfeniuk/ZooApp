@@ -42,10 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BindedTable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenDrawer.cs" />
-    <Compile Include="Table.cs" />
+    <Compile Include="FormatedTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
