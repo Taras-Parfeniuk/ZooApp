@@ -74,6 +74,7 @@ namespace UI
         public void SetDataSource(IEnumerable<Animal> animals)
         {
             _table = new BindedTable<Animal>(animals, a => Tuple.Create<string, char, string>("Name|State|Health", '|', $"{a.ToString()}|{a.State}|{a.Health}/{a.MaxHealth}"));
+            _table.UsePageination();
         }
 
         public ScreenDrawer(IAnimalRepository animals)
