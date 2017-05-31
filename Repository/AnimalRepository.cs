@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Domain.Abstract;
+using Domain.Entities;
 
 namespace Repository
 {
@@ -24,15 +25,13 @@ namespace Repository
 
         public IEnumerable<Animal> GetSickTigers()
         {
-            return _animals
-                .Where(a => a.GetType().Name == "Tiger")
+            return _animals.OfType<Tiger>()
                 .Where(t => t.State == AnimalState.Sick);
         }
 
         public Animal GetElephantByName(string name)
         {
-            return _animals
-                .Where(a => a.GetType().Name == "Elephant")
+            return _animals.OfType<Elephant>()
                 .FirstOrDefault(e => e.Name == name);
         }
 
@@ -57,7 +56,7 @@ namespace Repository
             return _animals
                 .GroupBy(o => o.GetType())
                 .Select(g => 
-                    Tuple.Create<string, int>(g.Key.Name, g.Where(a => a.State == AnimalState.Dead).Count()));
+                    Tuple.Create<string, int>(g.Key.Name, g.Count(a => a.State == AnimalState.Dead)));
         }
 
         public IEnumerable<Animal> GetWolfsAndBearsByHealth(int health)
@@ -68,12 +67,18 @@ namespace Repository
 
         public IEnumerable<Animal> GetMinAndMaxHealthy()
         {
-            return _animals.Where(a => a.Health == _animals.Max(x => x.Health) || a.Health == _animals.Min(x => x.Health));
+            return from animal in _animals
+                   let min = _animals.Min(a => a.Health)
+                   let max = _animals.Max(a => a.Health)
+                   where animal.IsAlive && (animal.Health == min || animal.Health == max)
+                   select animal;
         }
 
         public double GetHealthAverage()
         {
-            return _animals.Average(a => a.Health);
+            return _animals
+                .Where(a => a.IsAlive)
+                .Average(a => a.Health);
         }
         #endregion
 

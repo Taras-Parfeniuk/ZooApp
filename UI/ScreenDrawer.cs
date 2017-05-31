@@ -50,7 +50,8 @@ namespace UI
                         }
                         break;
                     case ConsoleKey.LeftArrow:
-                        currentIndex--;
+                        if (currentIndex > 0)
+                            currentIndex--;
                         Console.SetCursorPosition(currentIndex, Console.CursorTop);
                         break;
                     case ConsoleKey.RightArrow:
